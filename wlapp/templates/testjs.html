@@ -1,0 +1,124 @@
+{% load static %}
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <!-- 必须的 meta 标签 -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap 的 CSS 文件 -->
+  <link rel="stylesheet" href="{% static 'wlapp/bootstrap.min.css' %}">
+
+  <title>Hello, world!</title>
+</head>
+
+<body>
+  <div class="container">
+    <h1>学习javascript</h1>
+    <div class="row">
+      <h2> 三个程序员笑话</h2>
+    </div>
+    <div style="margin-top: 20px;">
+      <button id="jokebtn01" type="button" class="btn btn-primary" style="margin-right: 5px;">笑话1</button>
+      <button id="jokebtn02" type="button" class="btn btn-primary" style="margin-right: 5px;">笑话2</button>
+      <button id="jokebtn03" type="button" class="btn btn-primary" style="margin-right: 5px;">笑话3</button>
+      <button id="btnshow" type="button" class="btn btn-primary" style="margin-right: 5px;">展示</button>
+      <button id="btnhide" type="button" class="btn btn-primary" style="margin-right: 5px;">隐藏</button>
+    </div>
+
+    <div class="row" style="margin-top: 20px;">
+      <div id="jokecont" class="alert alert-success"></div>
+
+    </div>
+
+    <div class="row" style="margin-top: 20px;">
+      <h2>简单计算器</h2>
+      <div>
+      <input type="text" id ="number01">
+      *
+      <input type="text" id ="number02">
+      =
+      <input type="text" id ="numberresult" disabled >
+      <button type="button" id ="btncompute" class="btn btn-primary">执行计算</button>
+      </div>
+    </div>
+
+    <div class="row" style="margin-top: 20px;" >
+      <h2>密码生成器</h2>
+    </div>
+
+    <div>
+      <button type="button" id ="btngetpwd" class="btn btn-success" style="margin-left: 5px;">获取新密码</button>
+      <div id="pwdcont" class="alert alert-success" style="margin-top: 10px;">这里展示密码结果</div>
+    </div>
+
+
+  </div>
+
+  <script src="{% static 'wlapp/jquery.min.js' %} "></script>
+  <script src="{% static 'wlapp/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- js代码 实现交互 $代表javascript的对象 function代表函数-->
+  <script>
+    var jokeconfig={
+      "joke 01":"头发越少程序员越厉害",
+      "joke 02":"PHP是最好的编程语言",
+      "joke 03":"打字很快的程序员其实是在聊天",
+
+
+    }
+    // 在这段代码中，两个$符号都是 jQuery 库中的入口函数标识。
+    //第一个$(function() {... }) 是 $(document).ready(function() {... }) 的简写形式 ，它的作用是在 HTML 文档的 DOM 结构完全加载和解析完成后，才执行括号内的回调函数。这样可以确保在操作页面元素时，这些元素已经存在于页面中，避免因元素加载滞后导致的 JavaScript 报错。
+    //第二个$("#jokebtn01") 中，$ 符号用于调用 jQuery 的选择器功能，$("#jokebtn01") 是一个 ID 选择器，表示选中页面中 ID 属性值为 jokebtn01 的元素，后续可以对选中的元素进行诸如绑定点击事件（如代码中的 .click(function() {... }) ）等操作。
+    $(function(){
+      $("#jokecont").html(jokeconfig["joke 01"])
+      $("#jokebtn01").click(function(){
+        $("#jokecont").html(jokeconfig["joke 01"])
+        //alert(jokeconfig["joke 01"])
+      })
+
+      $("#jokebtn02").click(function(){
+        $("#jokecont").html(jokeconfig["joke 02"])
+        //alert(jokeconfig["joke 01"])
+      })
+
+      $("#jokebtn03").click(function(){
+        $("#jokecont").html(jokeconfig["joke 03"])
+        //alert(jokeconfig["joke 01"])
+      })
+
+      $("#btnshow").click(function(){
+        $("#jokecont").show()
+      })
+
+      $("#btnhide").click(function(){
+        $("#jokecont").hide()
+      })
+
+      $("#btncompute").click(function(){
+        let number01=$("#number01").val()
+        let number02=$("#number02").val()
+        let result= number01 * number02
+        $("#numberresult").val(result)
+      })
+
+      $("#btngetpwd").click(function(){
+        $.ajax({
+          url:"/getnewpwd/",
+          type:"get",
+          success:function(result){
+            $("#pwdcont").html(result)
+          }
+        })
+      })
+    })
+  </script>
+    
+
+
+</body>
+
+</html>
+
+<!--val() 主要用于表单元素值的获取和设置,如input sleect等。html() 主要用于 HTML 元素内部 HTML 内容的获取和设置-->

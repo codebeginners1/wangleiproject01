@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %} 用户管理 {% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>添加用户</h2>
+    <div>
+        <form class="col-5" method="POST" >
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_username">用户名：</label>
+                <input type="text" class="form-control" id="id_username" name="username" >    
+            </div>
+            <div class="form-group">
+                <label for="id_password">密码：</label>
+                <input type="password" class="form-control" id="id_password" name="password" >    
+            </div>
+            <div class="form-group">
+                <label for="id_password_confirm">确认密码：</label>
+                <input type="password" class="form-control" id="id_password_confirm"  name="password_confirm">    
+            </div>
+            <div class="form-group">
+                <label for="id_gender">性别：</label>
+                <select class="form-control" id="id_gender" name="gender">
+                    <option value="1">男生</option>
+                    <option value="0">女生</option>
+        
+                </select>   
+            </div>
+            <div class="form-group">
+                <label for="id_role">角色：</label>
+                <select class="form-control" id="id_role" name="role">
+                    <option value="normal">普通用户</option>
+                    <option value="admin">管理员</option>
+        
+                </select>     
+            </div>
+            <div class="form-group">
+                <label for="id_age">年龄：</label>
+                <input type="text" class="form-control" id="id_age" name="age" >    
+            </div>
+            {% if err_msg %}
+                <div class="alert alert_danger">{{err_msg}}</div>
+            {% endif %}
+            <button type="submit" class="btn btn-primary">提  交</button>
+        </form>
+    </div>
+</div>
+{% endblock%}

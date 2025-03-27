@@ -1,0 +1,333 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title %} 统计报表{% endblock %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <h3>统计报表</h3>
+    <div>
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#tianqiModal">
+            导入天气数据
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="tianqiModal" tabindex="-1" aria-labelledby="tianqiModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">导入天气数据</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" novalidate id="tianqiForm" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                        </form>
+                        <div id="error_msg" style="color:red;margin-bottom: 20px;"></div>
+                        <!-- 展示ajax的错误信息 -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" id="saveFileBtn" class="btn btn-primary">保存文件</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <form method="GET">
+                请选择年份:
+                <select name="year" id="selectYear">
+                    {% for year in years %}
+                    <option value="{{ year }}">{{ year }}</option>
+                    <!--表示将 years 的值动态插入到 value 属性中。
+                            如果 years 的值是 2023，生成的 HTML 将是：-->
+                    {% endfor %}
+                </select>
+
+                <button type="button" id="showTianQiTable" class="btn btn-primary btn-sm">查询数据</button>
+            </form>
+        </div>
+
+        <div class="card" style="margin-top: 20px;">
+            <div class="card-header">
+                天气折线图
+            </div>
+            <div class="card-body">
+                <div id="tianqiline" style="width: 100%;height:400px;"></div>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 20px;">
+            <div class="col-8">
+                <div class="card">
+                    <div class="card-header">
+                        天气柱状图
+                    </div>
+                    <div class="card-body">
+                        <div id="tianqibar" style="width: 100%;height:300px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="card" style="margin-top: 20px;">
+                    <div class="card-header">
+                        天气饼图
+                    </div>
+                    <div class="card-body">
+                        <div id="tianqipie" style="width: 100%;height:300px;"></div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="card">
+            <div class="card-header">
+                天气表格
+            </div>
+
+            <div class="card-body" id="wenduTable">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock%}
+
+{% block jsfiles %}
+<script src="{% static 'wlapp/echarts.js' %}"></script>>
+{% endblock %}
+
+{% block jscodes %}
+<script>
+    $(function () {
+        $("#saveFileBtn").click(function () {
+            let data = new FormData(document.getElementById("tianqiForm"));
+            // 获取文件数据到data
+            $.ajax({
+                url: "",
+                // 默认当前路径
+                type: "POST",
+                data: data,
+                dataType: "json",
+                success: function (data) {
+                    // alert("导入成功");// 1 成功后弹窗提示 data是后端返回的
+                    if (data["status"]) {
+                        alert("导入成功");
+                        $("#tianqiModal").modal("toggle");
+                    } else {
+                        console.log(data["error"]["__all__"][0])
+                        $("#error_msg").html("错误：" + data["error"]["__all__"][0])
+                    }
+                },
+                processData: false,
+                contentType: false
+                //成功后弹窗提示，关闭模态框,  
+
+            });
+        })
+
+
+        $("#showTianQiTable").click(function () {
+            let year = $("#selectYear").val();
+            alert(year);
+            $.ajax({
+                url: "/get_year_table?year=" + year,
+                type: "GET",
+                //dataType: "json",
+                success: function (data) {
+
+                    $("#wenduTable").html(data);
+                }
+            })
+
+            showTianqiline();
+            showTianqibar();
+            showTianqipie();
+            //调用showTianqiline函数,下方定义
+        })
+
+        function showTianqiline() {
+            console.log($("#tianqiline").width(), $("#tianqiline").height());
+
+            var tianqilinechart = echarts.init(document.getElementById('tianqiline'));
+
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: '天气折线图'
+                },
+                tooltip: {},
+                legend: {
+                    data: ['最高温度', '最低温度'], // 添加图例
+                    top: 'bottom'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: [] // 初始为空，后续通过 AJAX 填充
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        name: '最高温度', // 图例名称
+                        data: [], // 初始为空，后续通过 AJAX 填充
+                        type: 'line'
+                    },
+                    {
+                        name: '最低温度', // 图例名称
+                        data: [], // 初始为空，后续通过 AJAX 填充
+                        type: 'line'
+                    }
+                ]
+            };
+
+
+            let year = $("#selectYear").val();
+            $.ajax({
+                url: "/get_tianqi_line?year=" + year,
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    option.xAxis.data = data["x"];
+                    option.series[0].data = data["y1"];
+                    option.series[1].data = data["y2"];
+                    tianqilinechart.setOption(option);
+                    // 使用刚指定的配置项和数据显示图表
+                }
+            })
+        }
+
+        function showTianqibar() {
+
+
+            var tianqibarchart = echarts.init(document.getElementById('tianqibar'));
+
+            // 指定图表的配置项和数据
+            var option = {
+                xAxis: {
+                    type: 'category',
+                    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        data: [120, 200, 150, 80, 70, 110, 130],
+                        type: 'bar'
+                    }
+                ]
+            };
+
+            let year = $("#selectYear").val();
+            $.ajax({
+                url: "/get_tianqi_bar?year=" + year,
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    option.xAxis.data = data["x"];
+                    option.series[0].data = data["y"];
+                    tianqibarchart.setOption(option);
+                    
+                    // 使用刚指定的配置项和数据显示图表
+                }
+            })
+            
+
+
+        }
+
+
+        function showTianqipie() {
+
+
+            var tianqipiechart = echarts.init(document.getElementById('tianqipie'));
+
+            // 指定图表的配置项和数据
+            option = {
+                title: {
+                    text: '天气饼图',
+                    subtext: 'Fake Data',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                    show: true,
+                    textStyle: {
+                        fontSize: 10 // 调整字体大小以适配区域
+                    },
+                    itemWidth: 10, // 调整图例标记的宽度以适配区域
+                    itemHeight: 10 // 调整图例标记的高度以适配区域
+                },
+                series: [
+                    {
+                        name: 'Access From',
+                        type: 'pie',
+                        radius: '50%',
+                        data: [
+                            { value: 1048, name: 'Search Engine' },
+                            { value: 735, name: 'Direct' },
+                            { value: 580, name: 'Email' },
+                            { value: 484, name: 'Union Ads' },
+                            { value: 300, name: 'Video Ads' }
+                        ],
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            let year = $("#selectYear").val();
+            $.ajax({
+                url: "/get_tianqi_pie?year=" + year,
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    option.series[0].data = data["data"];
+                    tianqipiechart.setOption(option);
+                    
+                    // 使用刚指定的配置项和数据显示图表
+                }
+            })
+            
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    })
+</script>
+
+
+
+{% endblock %}

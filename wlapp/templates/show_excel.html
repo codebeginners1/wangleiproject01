@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<!--声明是html文件-->
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>展示Excel表格</title>
+</head>
+
+<body>
+    <table>
+        <tr>
+            <th>学号</th>
+            <th>姓名</th>
+            <th>语文</th>
+            <th>数学</th>
+            <th>英语</th>
+        </tr>
+
+        {% for idx,row in df.iterrows %}
+        <!-- 这是html代码，要写for循环，只能这么写，注意下方闭合标签-->
+
+        <tr>
+            <th>{{row.学号}}</th>
+            <th>{{row.姓名}}</th>
+            <th>{{row.语文}}</th>
+            <th>{{row.数学}}</th>
+            <th>{{row.英语}}</th>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>

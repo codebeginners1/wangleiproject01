@@ -1,0 +1,77 @@
+<h1>变量使用 </h1>
+
+你好，用户：{{username}}
+<br/>
+你的成绩是：<br/>
+语文：{{grades.语文}}<br/>
+数学：{{grades.数学}}<br/>
+英语：{{grades.英语}}<br/>
+你的前两个爱好是<br/>{{likes.0}}and{{likes.1}}
+<br/><br/>
+欢迎词：<br/>
+长度：{{welcome|length}}<br/>
+{{welcome|lower}}<br/>
+
+<br/>
+
+现在时间是：{{now}}<br/>
+
+{{now|date:"Y-m-d"}}
+<br/>
+<br/>
+欢迎你的到来，
+
+{% if role == "normal" %}
+欢迎你{{role}},普通用户
+{% elif role == "vip" %}
+欢迎你{{role}},VIP用户
+{% elif role == "admin" %}
+欢迎你{{role}},管理员
+{% else %}
+欢迎你{{role}},普通1用户
+{% endif %}
+
+<br/>
+<br/>
+
+{% if role == "vip" %}
+欢迎你{{role}},VIP用户
+{% else %}
+欢迎你{{role}},普通1用户
+{% endif %}
+
+<br/>
+<br/>
+
+你的爱好列表是:<br/>
+<ul>
+    {% for like in likes %}
+    <li>{{like}}</li>
+    {% endfor %}
+
+</ul>
+
+<br/>
+<br/>
+学生列表
+
+<table>
+    <tr>
+        <th>学号</th>
+        <th>姓名</th>
+    </tr>
+
+    {% for student in students %}
+    <tr>
+        <td>{{student.id}}</td>
+        <td>{{student.name}}</td>
+    </tr>
+    {% endfor%}
+</table>
+
+
+
+
+
+
+

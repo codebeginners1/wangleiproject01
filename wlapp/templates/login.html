@@ -1,0 +1,60 @@
+{% load static %}
+
+<!doctype html>
+<html lang="zh-CN">
+{% load crispy_forms_tags %}
+
+<head>
+    <!-- 必须的 meta 标签 -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap 的 CSS 文件 -->
+    <link rel="stylesheet" href="{% static 'wlapp/bootstrap.min.css' %}">
+
+    {% block stylekfiles %}
+    <style>
+        body {
+            padding-bottom: 500px;
+        }
+    </style>
+    {% endblock %}
+
+    <title>{% block title %} 登陆 {% endblock %}</title>
+
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row justify-content-md-center" style="margin-top: 100px">
+            <div class="card col-6 style=" margin-bottom:10px">
+                <div class="card-body">
+                    <form method="POST" novalidate>
+                        {% csrf_token %}
+                        <h3 class="card-title">用户登录</h3>
+                        <p class="card-text">
+
+                            {{ form|crispy }}
+                        </p>
+                        <button type="submit" class="btn btn-primary">登录</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <script src="{% static 'wlapp/jquery.min.js' %} "></script>
+    <script src="{% static 'wlapp/bootstrap.bundle.min.js' %}"></script>
+
+
+
+
+
+</body>
+
+</html>

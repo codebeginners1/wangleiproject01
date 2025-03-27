@@ -1,0 +1,19 @@
+SELECT User, Host FROM mysql.user;
+show databases;
+
+create database wlproject;
+
+show databases;
+USE wlproject;
+DELETE FROM django_migrations WHERE app = 'wlapp';
+
+use wlproject;
+
+desc wlapp_user;
+
+python manage.py makemigrations wlapp
+
+python manage.py sqlmigrate wlapp 0002
+python manage.py migrate
+
+alter table antproject.antapp_orderdata CONVERT TO CHARACTER SET ;

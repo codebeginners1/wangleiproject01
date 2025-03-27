@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %} 用户管理 {% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>学员管理</h2>
+    <div class="row">
+        <div class="col-5 mr-auto">
+            <a href="/user_add/" class="btn btn-primary"> 添加用户</a>
+            <a href="/user_add_form/" class="btn btn-primary"> 添加用户(from)</a>
+            <a href="/user_add_model/" class="btn btn-primary"> 添加用户(model)</a>
+
+        </div>
+        <div class="col-4">
+            <form class="form-inline" method="POST">
+                {% csrf_token %}
+                <div class="form-group mx-sm-3 mb-2">
+                    <input type="text" class="form-control" id="id_keywords" name="keyword" placeholder="keyword">
+                </div>
+                <button type="submit" class="btn btn-primary mb-2">搜索</button>
+            </form>
+        </div>
+
+    </div>
+
+
+
+
+
+    <div>
+        <table class="table">
+
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Username</th>
+                    <th>Gender</th>
+                    <th>Age</th>
+                    <th>Role</th>
+                    <th>Create_time</th>
+                    <th>头像</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            {% for user in users_page.object_list %}
+            <tbody>
+                <tr>
+                    <td>{{user.id}}</td>
+                    <td>{{user.username}}</td>
+                    <td>{{user.get_gender_display}}</td>
+                    <td>{{user.age}}</td>
+                    <td>{{user.role}}</td>
+                    <td>{{user.create_time|date:"Y-m-d"}}</td>
+                    <td>
+                        {% if user.head_img %}
+                        <img src="{{user.head_img.url}}"/ width="50px",height="50px">
+                        {% else %}
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <a href="/user_edit/{{user.id}}" class="btn btn-success">修改</a>
+                        <a href="/user_edit_form/{{user.id}}" class="btn btn-success">修改(form)</a>
+                        <a href="/user_edit_model/{{user.id}}" class="btn btn-success">修改(model)</a>
+                        <a href="/user_delete/{{user.id}}" class="btn btn-danger">删除</a>
+                    </td>
+
+                </tr>
+            </tbody>
+
+
+            {% endfor %}
+
+        </table>
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                {% if users_page.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{users_page.previous_page_number}}">Previous</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">Previous</a>
+                </li>
+                {% endif %}
+
+                {% for page in users_page.paginator.page_range %}
+                <!--  users_page.paginator.page_range所有页码 -->
+
+                <li class="page-item {% if page == users_page.number%}active{% endif %}">
+                    <a class="page-link" href="?page={{page}}">
+                        {{page}}
+                    </a>
+                </li>
+                {% endfor %}
+
+
+                {% if users_page.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{users_page.next_page_number}}">
+                        Next</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+
+
+        </nav>
+
+    </div>
+
+</div>
+{% endblock%}

@@ -1,0 +1,92 @@
+{% load static %}
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <!-- 必须的 meta 标签 -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap 的 CSS 文件 -->
+    <link rel="stylesheet" href="{% static 'wlapp/bootstrap.min.css' %}">
+
+    {% block stylekfiles %}
+    <style>
+        body{
+            padding-bottom: 500px;
+        }
+    </style>
+    {% endblock %}
+
+    <title>{% block title %} 首页 {% endblock %}</title>
+
+</head>
+
+<body>
+    <div class="container">
+        
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">王磊之声</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item {% if request.path == "/" %}active{% endif%}">
+                        <a class="nav-link" href="/">首页</a> </a>
+                    </li>
+                    <li class="nav-item {% if request.path == "/show_excel/" %}active{% endif%}">
+                        <a class="nav-link" href="/show_excel/">成绩管理</a>
+                    </li>
+                    <li class="nav-item {% if request.path == "/show_excel/" %}active{% endif%}">
+                        <a class="nav-link" href="/order_manage/">订单管理</a>
+                    </li>
+                    <li class="nav-item {% if request.path == "/tianqi_agg/" %}active{% endif%}">
+                        <a class="nav-link" href="/tianqi_agg/">统计报表</a>
+                    </li>
+                    {% if request.session.user.role == "admin"   %}
+                    <li class="nav-item {% if request.path == "/users_manage/" %}active{% endif%}">
+                        <a class="nav-link" href="/users_manage/">用户管理</a>
+                    </li>
+                    {% endif %}
+
+                </ul>
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown"
+                        aria-expanded="false">
+                        {{request.session.user.username}}
+                        <!--login的request的session区域-->
+                        
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">Action</a>
+                        <a class="dropdown-item" href="#">Another action</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/logout/">退出登录</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+    {% block content %} 这是正文部分 {% endblock %}
+   
+
+
+
+    {% block jsfiles %} {% endblock %}<!--jsfiles是一个占位符，用于在子模板中插入js文件-->
+    <script src="{% static 'wlapp/jquery.min.js' %} "></script>
+    <script src="{% static 'wlapp/bootstrap.bundle.min.js' %}"></script>
+
+    {% block jscodes %} {% endblock %}
+
+
+
+
+
+</body>
+
+</html>
+
+<!--val() 主要用于表单元素值的获取和设置,如input sleect等。html() 主要用于 HTML 元素内部 HTML 内容的获取和设置-->

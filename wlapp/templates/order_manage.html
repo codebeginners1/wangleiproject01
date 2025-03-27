@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title %} 订单管理 {% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3>订单管理</h3>
+    <div>
+        <div class="card">
+            <div class="card-header">
+                订单导入
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="POST" class="form-inline" novalidate enctype="multipart/form-data">
+                <!--enctype="multipart/form-data"上传文件记得加-->
+                <!-- novalidate代表浏览器不校验-->
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary">提 交</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            订单列表
+        </div>
+    </div>
+    <div class="card-body">
+
+        <table class="table">
+
+            <thead>
+                <tr>
+                    <th>单号</th>
+                    <th>产品名称</th>
+                    <th>成本价</th>
+                    <th>销售价</th>
+                    <th>销售数量</th>
+                    <th>产品成本</th>
+                    <th>销售收入</th>
+                    <th>销售利润</th>
+                </tr>
+            </thead>
+            {% for data in datas %}
+            <tbody>
+                
+                <tr>
+                    <td>{{ data.order_id }}</td>
+                    <td>{{ data.product_name }}</td>
+                    <td>{{ data.cost_price }}</td>
+                    <td>{{ data.sale_price }}</td>
+                    <td>{{ data.sale_num }}</td>
+                    <td>{{ data.product_cost }}</td>
+                    <td>{{ data.sale_income }}</td>
+                    <td>{{ data.sale_profit }}</td>
+                </tr>
+            </tbody>
+            {% endfor %}
+
+        </table>
+
+    </div>
+</div>
+{% endblock%}
+order_id = models.IntegerField(verbose_name="订单号",primary_key=True)
+product_name = models.CharField(verbose_name="产品名称", max_length=128)
+cost_price = models.IntegerField(verbose_name="成本价")
+sale_price = models.IntegerField(verbose_name="销售价")
+sale_num = models.IntegerField(verbose_name="销售数量")
+product_cost = models.IntegerField(verbose_name="产品成本")
+sale_income = models.IntegerField(verbose_name="销售收入")
+sale_profit = models.IntegerField(verbose_name="销售利润")

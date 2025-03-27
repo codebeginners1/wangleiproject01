@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block title %} 用户管理 {% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>添加用户(model)</h2>
+    <div>
+        <form class="col-5" method="POST"  novalidate novalidate enctype="multipart/form-data">
+            <!-- novalidate代表浏览器不校验--
+             上传文件必须加enctype="multipart/form-data">
+            {% csrf_token %}
+           {{ form|crispy }}
+            <button type="submit" class="btn btn-primary">提  交</button>
+        </form>
+    </div>
+</div>
+{% endblock%}
