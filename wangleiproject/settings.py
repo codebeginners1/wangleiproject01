@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,6 +28,7 @@ DEBUG = False
 # 将来上线改为False
 
 ALLOWED_HOSTS = ['*']
+# 允许访问的主机，*表示所有主机都可以访问
 
 #以下是一些常见的情况，需要配置ALLOWED_HOSTS：
 #开发环境：在开发过程中，如果需要在本地网络中让其他设备访问开发服务器，或者使用自定义域名进行开发测试，就需要配置ALLOWED_HOSTS。例如，将ALLOWED_HOSTS设置为['*']（不推荐在生产环境中使用），或者指定具体的开发服务器 IP 地址或域名。
@@ -141,6 +143,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+# 静态文件路径
+STATICFILES_DIRS = os.path.join(BASE_DIR,"static"),
+# 静态文件目录
+STATIC_ROOT = os.path.join(BASE_DIR,"staticfiles")
+# 自动创建
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
